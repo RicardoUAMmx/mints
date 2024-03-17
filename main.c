@@ -24,8 +24,12 @@ int main( void ){
 	int** mb = mint_get( ma, 1, 1, 6, 5 );
 
 	mint_print( mb, 0, 0, xb, yb );
+	printf( "\n" );
+	printf( "\n" );
+
 	mint_free( ma, ya );
 	mint_free( mb, yb );
+
 	return 0;
 }
 
