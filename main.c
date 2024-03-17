@@ -23,7 +23,7 @@ int main( void ){
 	int xb = 5, yb = 4;
 	int** mb = mint_get( ma, 1, 1, 6, 5 );
 
-	mint_print( mb, 0, 0, 5, 4 );
+	mint_print( mb, 0, 0, xb, yb );
 	mint_free( ma, ya );
 	mint_free( mb, yb );
 	return 0;
