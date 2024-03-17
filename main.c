@@ -3,23 +3,21 @@
 
 int** m_create( int x, int y );
 void m_free( int** mints, int x );
-void m_print( int** mints, int x, int y );
-void m_fill_sequence( int** mints, int x, int y, int start );
+void m_print( int** mints, int fromx, int fromy, int tox, int toy);
+void m_fill_sequence( int** mints, int x, int y, int start, int step );
 void m_fill_random( int** mints, int x, int y, int min, int max );
-void m_fill_zero( int** mints, int x, int y );
 void m_fill_identity( int** mints, int x, int y );
 int** m_get( int** mints, int fromx, int fromy, int tox, int toy );
-// void m_fill_from( int** mints, int size, int fromx, int fromy, int** mcopy, int size2 );
+int** m_init( int shape_x, int shape_y, int param_1, int param_2, void (*fill)( int**, int, int, int, int ) );
 
 int main( void ){
 	int x = 16, y = 8;
-	int** ma = m_create( x, y );
-	m_fill_sequence( ma, x, y, 1 );
-	m_print( ma, x, y );
+	int** ma = m_init( x, y, 0, 1, m_fill_sequence );
+	m_print( ma, 0, 0, x, y );
 	int** mb = m_get( ma, 1, 1, 6, 5 );
 	printf( "\n" );
 	printf( "\n" );
-	m_print( mb, 5, 4 );
+	m_print( mb, 0, 0, 5, 4 );
 	m_free( ma, y );
 	m_free( mb, 4 );
 	return 0;
@@ -40,19 +38,19 @@ void m_free( int** mints, int y ){
 	free( mints );
 }
 
-void m_print( int** mints, int x, int y ){
-	for( int i=0; i<y; i++ ){
-		for( int j=0; j<x; j++ ){
+void m_print( int** mints, int fromx, int fromy, int tox, int toy ){
+	for( int i=fromy; i<toy; i++ ){
+		for( int j=fromx; j<tox; j++ ){
 			printf( "%-5d ", mints[i][j] );
 		}
 		printf( "\n" );
 	}
 }
 
-void m_fill_sequence( int** mints, int x, int y, int start ){
+void m_fill_sequence( int** mints, int x, int y, int start, int step ){
 	for( int i=0; i<y; i++ ){
 		for( int j=0; j<x; j++ ){
-			mints[i][j] = start++;
+			mints[i][j] = start + j*step + i*x*step;
 		}
 	}
 }
@@ -61,14 +59,6 @@ void m_fill_random( int** mints, int x, int y, int min, int max ){
 	for( int i=0; i<y; i++ ){
 		for( int j=0; j<x; j++ ){
 			mints[i][j] = rand() % (max-min+1) + min;
-		}
-	}
-}
-
-void m_fill_zero( int** mints, int x, int y ){
-	for( int i=0; i<y; i++ ){
-		for( int j=0; j<x; j++ ){
-			mints[i][j] = 0;
 		}
 	}
 }
@@ -93,10 +83,9 @@ int** m_get( int** mints, int fromx, int fromy, int tox, int toy ){
 	return mcopy;
 }
 
-// void m_fill_from( int** mints, int size, int fromx, int fromy, int** mcopy, int size2 ){
-// 	for( int i=fromx; i<fromx+size2; i++ ){
-// 		for( int j=fromy; j<fromy+size2; j++ ){
-// 			mints[i][j] = mcopy[i-fromx][j-fromy];
-// 		}
-// 	}
-// }
+int** m_init( int shape_x, int shape_y, int param_1, int param_2, void (*fill)( int**, int, int, int, int ) ){
+	int** mints = m_create( shape_x, shape_y );
+	fill( mints, shape_x, shape_y, param_1, param_2 );
+	return mints;
+}
+
